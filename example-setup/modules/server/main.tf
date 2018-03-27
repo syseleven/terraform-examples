@@ -1,4 +1,4 @@
-###7
+###
 ### SYS11 Terraform Example
 ### Module to create application server instances.
 ###
