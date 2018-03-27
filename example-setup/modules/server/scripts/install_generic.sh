@@ -1,0 +1,1 @@
+../../shared-scripts/install_generic.sh
