@@ -1,4 +1,4 @@
-###7
+###
 ### SYS11 Terraform Example
 ### Module to create service host, used a jumphost for management and being a
 ### consul server.

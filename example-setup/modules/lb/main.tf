@@ -1,4 +1,4 @@
-###7
+###
 ### SYS11 Terraform Example
 ### Module to create outside facing http load balancer.
 ###
