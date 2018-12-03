@@ -127,3 +127,12 @@ resource "openstack_lb_member_v2" "lb_app_pool_members" {
   name          = "${element(openstack_compute_instance_v2.instance_lbdemo.*.name, count.index)}"
   subnet_id     = "${openstack_networking_subnet_v2.subnet_lbdemo.id}"
 }
+
+resource "openstack_networking_floatingip_v2" "fip_lbdemo_lb" {
+  pool = "ext-net"
+}
+
+resource "openstack_networking_floatingip_associate_v2" "fipas_lbdemo_lb" {
+  floating_ip = "${openstack_networking_floatingip_v2.fip_lbdemo_lb.address}"
+  port_id = "${openstack_lb_loadbalancer_v2.lb_app.vip_port_id}"
+}
