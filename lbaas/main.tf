@@ -1,6 +1,6 @@
 resource "openstack_compute_keypair_v2" "kp_admin" {
   name       = "kp_admin"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzBd/ZXus0RGHqi6TdfLQcZML4b+woARlbV/+V9bsvdXKbe7FVLhd2oYV5n5kBI4DfEtD0J5BXBXbzG1BW9WmB/Ty2wlwUu+NFDCn+3kDTGov9Wlo5bfkPD/KDi/UNOqJvOMoCGzkCK04Di0ykG38gLKeOUDtLbh/s9Manr9vDguvtBV4UE7/kNQFzGFffB3ZyvKVzikrsm5Ri3knjCRwppN6BGZVMowTmhDgczyS3CJekdCBrgXu3eePuWbFnPVmSAapl775ouCLGAW0KsiSc9T4iTdpAMFxtvA5Pbciv4FDOfEf8w1t5xgko3KAPMLz37b7mqmRhQTwkW3BNaiZqLTC2RqZkHI5a6u655I1SJYZbJT2F/Ys8WaKTSdGLxRJ+rcV8YV0FveP6fa97gpqp6UmstGE7QsRaXPc9OG3U0hCTPYFlJ9QJ95FQMGQMt3/qsZHGWSI3H8jLn8Pqeky+XZA0Xq7cJq9n5gGpMVH2UgRT1WzbCAYiDMiNtzIxBXg5xVCzkhN98S7p+IxOpw6BsByOrIogo5lyC/qVS6tD5XCsAtOFk0ldhB/FuuyOrR1pSq3GZCyuiXkXWrwuSw7k5a7pkh3+E+t2pqYWgLFAaClNA0TI4UFfNnkgEfozop5UWuvNkbd98ruBHaGrQ0ASqWk4nEztHxUeJ/NkQ+n5uw== r.nurgaliyev@syseleven.de"
+  public_key = "${var.ssh_publickey}"
 }
 
 resource "openstack_compute_secgroup_v2" "sg_ssh" {
