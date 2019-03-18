@@ -134,5 +134,5 @@ resource "openstack_networking_floatingip_v2" "fip_lbdemo_lb" {
 
 resource "openstack_networking_floatingip_associate_v2" "fipas_lbdemo_lb" {
   floating_ip = "${openstack_networking_floatingip_v2.fip_lbdemo_lb.address}"
-  port_id = "${openstack_lb_loadbalancer_v2.lb_app.vip_port_id}"
+  port_id     = "${openstack_lb_loadbalancer_v2.lb_app.vip_port_id}"
 }
