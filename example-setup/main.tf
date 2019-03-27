@@ -24,6 +24,7 @@ variable "number_servicehosts" {
 
 variable "public_network" {
   type = "string"
+  default = "ext-net"
 }
 
 variable "flavor_lb" {
@@ -46,10 +47,6 @@ variable "flavor_servicehost" {
   default = "m1.micro"
 }
 
-variable "image" {
-  type = "string"
-}
-
 variable "consul_mastertoken_length" {
   type    = "string"
   default = "30"
@@ -70,6 +67,15 @@ variable "ssh_keys" {
 
 data "openstack_networking_network_v2" "public_network" {
   name = "${var.public_network}"
+}
+
+data "openstack_images_image_v2" "image" {
+  most_recent = true
+
+  properties = {
+    os_distro = "ubuntu"
+    os_version = "16.04"
+  }
 }
 
 ################################################################################
@@ -136,8 +142,8 @@ module "servicehost_group" {
 
   name           = "servicehost"
   flavor         = "${var.flavor_servicehost}"
-  image          = "${var.image}"
-  syseleven_net  = "${openstack_networking_network_v2.syseleven_net.name}"
+  image          = "${data.openstack_images_image_v2.image.id}"
+  syseleven_net  = "${openstack_networking_network_v2.syseleven_net.id}"
   public_network = "${var.public_network}"
   ssh_keys       = "${var.ssh_keys}"
 }
@@ -153,8 +159,8 @@ module "lb_group" {
 
   name           = "lb"
   flavor         = "${var.flavor_lb}"
-  image          = "${var.image}"
-  syseleven_net  = "${openstack_networking_network_v2.syseleven_net.name}"
+  image          = "${data.openstack_images_image_v2.image.id}"
+  syseleven_net  = "${openstack_networking_network_v2.syseleven_net.id}"
   public_network = "${var.public_network}"
   ssh_keys       = "${var.ssh_keys}"
 }
@@ -171,8 +177,8 @@ module "dbserver_group" {
 
   name          = "db"
   flavor        = "${var.flavor_dbserver}"
-  image         = "${var.image}"
-  syseleven_net = "${openstack_networking_network_v2.syseleven_net.name}"
+  image         = "${data.openstack_images_image_v2.image.id}"
+  syseleven_net = "${openstack_networking_network_v2.syseleven_net.id}"
   ssh_keys      = "${var.ssh_keys}"
 }
 
@@ -188,8 +194,8 @@ module "appserver_group" {
 
   name          = "app"
   flavor        = "${var.flavor_appserver}"
-  image         = "${var.image}"
-  syseleven_net = "${openstack_networking_network_v2.syseleven_net.name}"
+  image         = "${data.openstack_images_image_v2.image.id}"
+  syseleven_net = "${openstack_networking_network_v2.syseleven_net.id}"
   ssh_keys      = "${var.ssh_keys}"
 }
 

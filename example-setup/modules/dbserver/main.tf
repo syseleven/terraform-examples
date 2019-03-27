@@ -58,13 +58,19 @@ data "template_file" "cloud_config" {
 resource "openstack_compute_instance_v2" "db_instances" {
   count       = "${var.count}"
   name        = "${var.name}${count.index}"
-  image_name  = "${var.image}"
+  image_id    = "${var.image}"
   flavor_name = "${var.flavor}"
   user_data   = "${data.template_file.cloud_config.rendered}"
   metadata    = "${var.metadata}"
 
   network {
-    name = "${var.syseleven_net}"
+    uuid = "${var.syseleven_net}"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      "image_id"
+    ]
   }
 }
 
