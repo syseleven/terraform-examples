@@ -1,1 +1,1 @@
-ssh_key = "ssh-rsa AAAAB [...] gvTnAz user@host"
+ssh_publickey = "ssh-rsa AAAAB [...] gvTnAz user@host"
