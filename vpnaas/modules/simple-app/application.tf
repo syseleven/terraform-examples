@@ -54,7 +54,7 @@ resource "openstack_compute_instance_v2" "application" {
 
   lifecycle {
     ignore_changes = [
-      "image_id"
+      "image_id",
     ]
   }
 }

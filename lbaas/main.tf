@@ -1,7 +1,8 @@
 data "openstack_images_image_v2" "image" {
   most_recent = true
+
   properties {
-    os_distro = "ubuntu"
+    os_distro  = "ubuntu"
     os_version = "16.04"
   }
 }
@@ -90,7 +91,7 @@ resource "openstack_compute_instance_v2" "instance_lbdemo" {
 
   lifecycle {
     ignore_changes = [
-      "image_id"
+      "image_id",
     ]
   }
 }
@@ -112,7 +113,7 @@ resource "openstack_compute_instance_v2" "instance_jumphost" {
 
   lifecycle {
     ignore_changes = [
-      "image_id"
+      "image_id",
     ]
   }
 }
@@ -131,7 +132,7 @@ resource "openstack_lb_loadbalancer_v2" "lb_app" {
   name          = "application loadbalancer"
 
   security_group_ids = [
-    "${openstack_compute_secgroup_v2.sg_web.id}"
+    "${openstack_compute_secgroup_v2.sg_web.id}",
   ]
 }
 

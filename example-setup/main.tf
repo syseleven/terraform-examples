@@ -23,7 +23,7 @@ variable "number_servicehosts" {
 }
 
 variable "public_network" {
-  type = "string"
+  type    = "string"
   default = "ext-net"
 }
 
@@ -73,7 +73,7 @@ data "openstack_images_image_v2" "image" {
   most_recent = true
 
   properties = {
-    os_distro = "ubuntu"
+    os_distro  = "ubuntu"
     os_version = "16.04"
   }
 }

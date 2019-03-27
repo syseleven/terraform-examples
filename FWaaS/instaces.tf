@@ -2,7 +2,7 @@ data "openstack_images_image_v2" "image" {
   most_recent = true
 
   properties = {
-    os_distro = "ubuntu"
+    os_distro  = "ubuntu"
     os_version = "16.04"
   }
 }
@@ -41,7 +41,7 @@ resource "openstack_compute_instance_v2" "instance_blue" {
 
   lifecycle {
     ignore_changes = [
-      "image_id"
+      "image_id",
     ]
   }
 }

@@ -4,11 +4,11 @@ resource "openstack_networking_network_v2" "net_blue" {
 }
 
 resource "openstack_networking_subnet_v2" "subnet_blue" {
-  name       = "subnet_blue"
-  network_id = "${openstack_networking_network_v2.net_blue.id}"
+  name            = "subnet_blue"
+  network_id      = "${openstack_networking_network_v2.net_blue.id}"
   dns_nameservers = ["8.8.8.8", "8.8.4.4"]
-  cidr       = "192.168.2.0/24"
-  ip_version = 4
+  cidr            = "192.168.2.0/24"
+  ip_version      = 4
 }
 
 resource "openstack_networking_router_v2" "router_blue" {

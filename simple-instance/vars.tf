@@ -1,7 +1,7 @@
 variable "external_network" {
   type        = "string"
   description = "external network name"
-  default = "ext-net"
+  default     = "ext-net"
 }
 
 variable "ssh_publickey" {
