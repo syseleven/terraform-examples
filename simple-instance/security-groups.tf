@@ -1,5 +1,5 @@
 resource "openstack_compute_secgroup_v2" "sg_ssh" {
-  name        = "sg_ssh"
+  name        = "simple_sg_ssh"
   description = "Allow inboud SSH"
 
   rule {

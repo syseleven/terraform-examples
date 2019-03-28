@@ -60,16 +60,26 @@ data "template_file" "cloud_config" {
 ################################################################################
 
 resource "openstack_compute_instance_v2" "service_instances" {
-  count           = "${var.count}"
-  name            = "${var.name}${count.index}"
-  image_name      = "${var.image}"
-  flavor_name     = "${var.flavor}"
-  security_groups = ["default", "${openstack_compute_secgroup_v2.allow_ssh.name}"]
-  user_data       = "${data.template_file.cloud_config.rendered}"
-  metadata        = "${var.metadata}"
+  count       = "${var.count}"
+  name        = "${var.name}${count.index}"
+  image_id    = "${var.image}"
+  flavor_name = "${var.flavor}"
+  user_data   = "${data.template_file.cloud_config.rendered}"
+  metadata    = "${var.metadata}"
+
+  security_groups = [
+    "default",
+    "${openstack_compute_secgroup_v2.allow_ssh.name}",
+  ]
 
   network {
-    name = "${var.syseleven_net}"
+    uuid = "${var.syseleven_net}"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      "image_id",
+    ]
   }
 }
 

@@ -51,6 +51,12 @@ resource "openstack_compute_instance_v2" "application" {
   network {
     name = "${var.network}"
   }
+
+  lifecycle {
+    ignore_changes = [
+      "image_id",
+    ]
+  }
 }
 
 resource "openstack_compute_floatingip_v2" "application" {
