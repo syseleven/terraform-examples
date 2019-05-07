@@ -1,6 +1,6 @@
 resource "openstack_compute_secgroup_v2" "sg_ssh" {
   name        = "sg_ssh_icmp"
-  description = "Allow inboud SSH and ICMP"
+  description = "Allow inbound SSH and ICMP"
 
   rule {
     from_port   = 22

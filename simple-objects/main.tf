@@ -5,7 +5,7 @@ resource "openstack_compute_keypair_v2" "kp_adminuser" {
 
 resource "openstack_compute_secgroup_v2" "sg_control" {
   name        = "sg_control"
-  description = "Allow inboud SSH and SNMP"
+  description = "Allow inbound SSH and SNMP"
 
   rule {
     from_port   = 22

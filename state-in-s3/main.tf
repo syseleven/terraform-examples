@@ -5,7 +5,7 @@ resource "openstack_compute_keypair_v2" "kp_adminuser" {
 
 resource "openstack_compute_secgroup_v2" "sg_ssh" {
   name        = "sg_ssh"
-  description = "Allow inboud SSH"
+  description = "Allow inbound SSH"
 
   rule {
     from_port   = 22

@@ -1,6 +1,6 @@
 resource "openstack_compute_secgroup_v2" "sg_ssh" {
   name        = "simple_sg_ssh"
-  description = "Allow inboud SSH"
+  description = "Allow inbound SSH"
 
   rule {
     from_port   = 22
