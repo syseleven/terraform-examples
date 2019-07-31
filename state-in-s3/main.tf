@@ -1,6 +1,6 @@
 resource "openstack_compute_keypair_v2" "kp_adminuser" {
   name       = "kp_adminuser"
-  public_key = "${var.ssh_publickey}"
+  public_key = var.ssh_publickey
 }
 
 resource "openstack_compute_secgroup_v2" "sg_ssh" {
@@ -14,3 +14,4 @@ resource "openstack_compute_secgroup_v2" "sg_ssh" {
     cidr        = "0.0.0.0/0"
   }
 }
+

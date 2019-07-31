@@ -16,3 +16,4 @@ resource "openstack_compute_secgroup_v2" "sg_ssh" {
     cidr        = "0.0.0.0/0"
   }
 }
+
