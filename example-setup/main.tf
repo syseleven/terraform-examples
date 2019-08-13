@@ -105,7 +105,7 @@ resource "openstack_networking_subnet_v2" "syseleven_subnet" {
   name            = "syseleven_subnet"
   network_id      = openstack_networking_network_v2.syseleven_net.id
   cidr            = "192.168.2.0/24"
-  dns_nameservers = ["8.8.8.8", "8.8.4.4"]
+  dns_nameservers = ["37.123.105.116", "37.123.105.117"]
   ip_version      = 4
 
   allocation_pools {
