@@ -49,7 +49,7 @@ resource "openstack_networking_subnet_v2" "subnet_lbdemo" {
   name            = "subnet_lbdemo"
   network_id      = openstack_networking_network_v2.net_lbdemo.id
   cidr            = "192.168.1.0/24"
-  dns_nameservers = ["8.8.8.8", "8.8.4.4"]
+  dns_nameservers = ["37.123.105.116", "37.123.105.117"]
   ip_version      = 4
 }
 
