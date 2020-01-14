@@ -29,22 +29,22 @@ variable "public_network" {
 
 variable "flavor_lb" {
   type    = string
-  default = "m1.micro"
+  default = "m1.tiny"
 }
 
 variable "flavor_appserver" {
   type    = string
-  default = "m1.micro"
+  default = "m1.tiny"
 }
 
 variable "flavor_dbserver" {
   type    = string
-  default = "m1.micro"
+  default = "m1.tiny"
 }
 
 variable "flavor_servicehost" {
   type    = string
-  default = "m1.micro"
+  default = "m1.tiny"
 }
 
 variable "consul_mastertoken_length" {

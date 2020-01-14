@@ -77,7 +77,7 @@ resource "openstack_compute_instance_v2" "instance_lbdemo" {
   count       = 3
   name        = "App Instance ${count.index + 1}"
   image_id    = data.openstack_images_image_v2.image.id
-  flavor_name = "m1.micro"
+  flavor_name = "m1.tiny"
   key_pair    = openstack_compute_keypair_v2.kp_admin.name
   user_data   = data.template_file.cloud_config.rendered
 
@@ -98,7 +98,7 @@ resource "openstack_compute_instance_v2" "instance_lbdemo" {
 resource "openstack_compute_instance_v2" "instance_jumphost" {
   name        = "Jumphost"
   image_id    = data.openstack_images_image_v2.image.id
-  flavor_name = "m1.micro"
+  flavor_name = "m1.tiny"
   key_pair    = openstack_compute_keypair_v2.kp_admin.name
 
   security_groups = [

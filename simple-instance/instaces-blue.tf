@@ -1,7 +1,7 @@
 resource "openstack_compute_instance_v2" "instance_blue" {
   name            = "BLUE Instance"
   image_id        = data.openstack_images_image_v2.image.id
-  flavor_name     = "m1.micro"
+  flavor_name     = "m1.tiny"
   key_pair        = openstack_compute_keypair_v2.kp_adminuser.name
   security_groups = [openstack_compute_secgroup_v2.sg_ssh.name]
 
