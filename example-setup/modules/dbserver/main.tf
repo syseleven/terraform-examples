@@ -7,7 +7,7 @@
 # Input variables
 ################################################################################
 
-variable "count" {
+variable "num" {
   type    = "string"
   default = "1"
 }
@@ -56,7 +56,7 @@ data "template_file" "cloud_config" {
 ################################################################################
 
 resource "openstack_compute_instance_v2" "db_instances" {
-  count       = "${var.count}"
+  count       = "${var.num}"
   name        = "${var.name}${count.index}"
   image_id    = "${var.image}"
   flavor_name = "${var.flavor}"

@@ -8,7 +8,7 @@
 # Input variables
 ################################################################################
 
-variable "count" {
+variable "num" {
   type    = "string"
   default = "1"
 }
@@ -60,7 +60,7 @@ data "template_file" "cloud_config" {
 ################################################################################
 
 resource "openstack_compute_instance_v2" "service_instances" {
-  count       = "${var.count}"
+  count       = "${var.num}"
   name        = "${var.name}${count.index}"
   image_id    = "${var.image}"
   flavor_name = "${var.flavor}"
@@ -111,12 +111,12 @@ resource "openstack_compute_secgroup_v2" "allow_ssh" {
 ################################################################################
 
 resource "openstack_compute_floatingip_v2" "service_floating_ips" {
-  count = "${var.count}"
+  count = "${var.num}"
   pool  = "${var.public_network}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "service_floating_ip_assocs" {
-  count       = "${var.count}"
+  count       = "${var.num}"
   floating_ip = "${element(openstack_compute_floatingip_v2.service_floating_ips.*.address, count.index)}"
   instance_id = "${element(openstack_compute_instance_v2.service_instances.*.id, count.index)}"
 }
