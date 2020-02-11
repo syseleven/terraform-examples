@@ -48,7 +48,7 @@ variable "metadata" {
 data "template_file" "cloud_config" {
   template = "${file("${path.module}/cloud.cfg")}"
 
-  vars {
+  vars = {
     ssh_keys              = "${indent(8, "\n- ${join("\n- ", var.ssh_keys)}")}"
     install_generic_sh    = "${base64encode(file("${path.module}/scripts/install_generic.sh"))}"
     install_deployhost_sh = "${base64encode(file("${path.module}/scripts/install_deployhost.sh"))}"
