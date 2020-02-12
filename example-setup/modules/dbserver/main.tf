@@ -7,7 +7,7 @@
 # Input variables
 ################################################################################
 
-variable "count" {
+variable "num" {
   type    = "string"
   default = "1"
 }
@@ -43,7 +43,7 @@ variable "metadata" {
 data "template_file" "cloud_config" {
   template = "${file("${path.module}/cloud.cfg")}"
 
-  vars {
+  vars = {
     # Join list of ssh keys to an indented string value usable for YAML
     ssh_keys            = "${indent(8, "\n- ${join("\n- ", var.ssh_keys)}")}"
     install_generic_sh  = "${base64encode(file("${path.module}/scripts/install_generic.sh"))}"
@@ -56,7 +56,7 @@ data "template_file" "cloud_config" {
 ################################################################################
 
 resource "openstack_compute_instance_v2" "db_instances" {
-  count       = "${var.count}"
+  count       = "${var.num}"
   name        = "${var.name}${count.index}"
   image_id    = "${var.image}"
   flavor_name = "${var.flavor}"
