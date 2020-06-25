@@ -131,10 +131,6 @@ resource "openstack_compute_floatingip_associate_v2" "fipas_lbdemo" {
 resource "openstack_lb_loadbalancer_v2" "lb_app" {
   vip_subnet_id = openstack_networking_subnet_v2.subnet_lbdemo.id
   name          = "application loadbalancer"
-
-  security_group_ids = [
-    openstack_compute_secgroup_v2.sg_web.id,
-  ]
 }
 
 resource "openstack_lb_listener_v2" "lb_app_listener" {
@@ -169,12 +165,12 @@ resource "openstack_lb_member_v2" "lb_app_pool_members" {
 }
 
 resource "openstack_lb_monitor_v2" "lb_app_monitor" {
-  pool_id     = openstack_lb_pool_v2.lb_app_pool.id
-  type        = "HTTP"
-  delay       = 10
-  timeout     = 5
-  max_retries = 2
-  url_path    = "/"
+  pool_id        = openstack_lb_pool_v2.lb_app_pool.id
+  type           = "HTTP"
+  delay          = 10
+  timeout        = 5
+  max_retries    = 2
+  url_path       = "/"
   expected_codes = 200
 }
 
