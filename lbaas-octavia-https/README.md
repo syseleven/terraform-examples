@@ -9,7 +9,7 @@ using plain HTTP.
 
 ## Barbican secret container
 
-This exammple requires a barbican secret container with the name `tls` that 
+This example requires a barbican secret container with the name `tls` that 
 contains a certificate and a private key.
 The certificate and the private key can be stored in barbican with 
 the following commands: 
