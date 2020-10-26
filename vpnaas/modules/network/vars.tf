@@ -1,12 +1,12 @@
 variable "region" {
-  type = "string"
+  type = string
 }
 
 variable "name" {
-  type    = "string"
+  type    = string
   default = "unicorn"
 }
 
 variable "cidr" {
-  type = "string"
+  type = string
 }
