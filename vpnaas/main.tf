@@ -50,44 +50,49 @@ module "application_dbl" {
 
 # VPN Site-to-Site connections
 resource "openstack_vpnaas_site_connection_v2" "cbk_to_dbl" {
-  name           = "CBK to DBL"
-  provider       = openstack.cbk
-  vpnservice_id  = module.network_cbk.vpnservice_id
-  ikepolicy_id   = module.network_cbk.ikepolicy_id
-  ipsecpolicy_id = module.network_cbk.ipsecpolicy_id
-  peer_id        = module.network_dbl.peer_id
-  peer_address   = module.network_dbl.peer_id
-  psk            = var.ipsec_psk
-  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-  # force an interpolation expression to be interpreted as a list by wrapping it
-  # in an extra set of list brackets. That form was supported for compatibilty in
-  # v0.11, but is no longer supported in Terraform v0.12.
-  #
-  # If the expression in the following list itself returns a list, remove the
-  # brackets to avoid interpretation as a list of lists. If the expression
-  # returns a single list item then leave it as-is and remove this TODO comment.
-  peer_cidrs     = [module.network_dbl.cidr]
-  admin_state_up = "true"
+  name              = "CBK to DBL"
+  provider          = openstack.cbk
+  vpnservice_id     = module.network_cbk.vpnservice_id
+  ikepolicy_id      = module.network_cbk.ikepolicy_id
+  ipsecpolicy_id    = module.network_cbk.ipsecpolicy_id
+  peer_id           = module.network_dbl.peer_id
+  peer_address      = module.network_dbl.peer_id
+  psk               = var.ipsec_psk
+  local_ep_group_id = module.network_cbk.local_endpoint_group_id
+  peer_ep_group_id  = openstack_vpnaas_endpoint_group_v2.peer_dbl.id
+  admin_state_up    = "true"
+}
+
+resource "openstack_vpnaas_endpoint_group_v2" "peer_dbl" {
+  provider  = openstack.cbk
+  name      = "DBL peer"
+  type      = "cidr"
+  endpoints = [module.network_dbl.cidr]
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "openstack_vpnaas_site_connection_v2" "dbl_to_cbk" {
-  name           = "DBL to CBK"
-  provider       = openstack.dbl
-  vpnservice_id  = module.network_dbl.vpnservice_id
-  ikepolicy_id   = module.network_dbl.ikepolicy_id
-  ipsecpolicy_id = module.network_dbl.ipsecpolicy_id
-  peer_id        = module.network_cbk.peer_id
-  peer_address   = module.network_cbk.peer_id
-  psk            = var.ipsec_psk
-  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
-  # force an interpolation expression to be interpreted as a list by wrapping it
-  # in an extra set of list brackets. That form was supported for compatibilty in
-  # v0.11, but is no longer supported in Terraform v0.12.
-  #
-  # If the expression in the following list itself returns a list, remove the
-  # brackets to avoid interpretation as a list of lists. If the expression
-  # returns a single list item then leave it as-is and remove this TODO comment.
-  peer_cidrs     = [module.network_cbk.cidr]
-  admin_state_up = "true"
+  name              = "DBL to CBK"
+  provider          = openstack.dbl
+  vpnservice_id     = module.network_dbl.vpnservice_id
+  ikepolicy_id      = module.network_dbl.ikepolicy_id
+  ipsecpolicy_id    = module.network_dbl.ipsecpolicy_id
+  peer_id           = module.network_cbk.peer_id
+  peer_address      = module.network_cbk.peer_id
+  psk               = var.ipsec_psk
+  local_ep_group_id = module.network_dbl.local_endpoint_group_id
+  peer_ep_group_id  = openstack_vpnaas_endpoint_group_v2.peer_cbk.id
+  admin_state_up    = "true"
 }
 
+resource "openstack_vpnaas_endpoint_group_v2" "peer_cbk" {
+  provider  = openstack.dbl
+  name      = "CBK peer"
+  type      = "cidr"
+  endpoints = [module.network_cbk.cidr]
+  lifecycle {
+    create_before_destroy = true
+  }
+}

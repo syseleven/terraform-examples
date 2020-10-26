@@ -1,17 +1,17 @@
 variable "region" {
-  type = "string"
+  type = string
 }
 
 variable "name" {
-  type    = "string"
+  type    = string
   default = "unicorn"
 }
 
 variable "network" {
-  type    = "string"
+  type    = string
   default = "unicorn"
 }
 
 variable "public_key" {
-  type = "string"
+  type = string
 }
