@@ -42,8 +42,16 @@ resource "openstack_vpnaas_service_v2" "network" {
   depends_on     = ["openstack_networking_router_interface_v2.network"]
   name           = "${var.name}"
   router_id      = "${openstack_networking_router_v2.network.id}"
-  subnet_id      = "${openstack_networking_subnet_v2.network.id}"
   admin_state_up = "true"
+}
+
+resource "openstack_vpnaas_endpoint_group_v2" "local" {
+  name      = "${var.name} local"
+  type      = "subnet"
+  endpoints = ["${openstack_networking_subnet_v2.network.id}"]
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 output "vpnservice_id" {
@@ -64,4 +72,8 @@ output "peer_id" {
 
 output "cidr" {
   value = "${var.cidr}"
+}
+
+output "local_endpoint_group_id" {
+  value = "${openstack_vpnaas_endpoint_group_v2.local.id}"
 }
