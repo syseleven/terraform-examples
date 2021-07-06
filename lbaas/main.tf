@@ -4,7 +4,7 @@ data "openstack_images_image_v2" "image" {
   visibility = "public"
   properties = {
     os_distro  = "ubuntu"
-    os_version = "16.04"
+    os_version = "20.04"
   }
 }
 
