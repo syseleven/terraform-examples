@@ -8,32 +8,32 @@
 ################################################################################
 
 variable "num" {
-  type    = "string"
+  type    = string
   default = "1"
 }
 
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "syseleven_net" {
-  type = "string"
+  type = string
 }
 
 variable "image" {
-  type = "string"
+  type = string
 }
 
 variable "flavor" {
-  type = "string"
+  type = string
 }
 
 variable "ssh_keys" {
-  type = "list"
+  type = list
 }
 
 variable "metadata" {
-  type = "map"
+  type = map
 }
 
 ################################################################################
@@ -68,7 +68,7 @@ resource "openstack_compute_instance_v2" "app_instances" {
 
   lifecycle {
     ignore_changes = [
-      "image_id",
+      image_id,
     ]
   }
 }
