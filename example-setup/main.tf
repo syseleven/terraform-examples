@@ -109,7 +109,7 @@ resource "openstack_networking_subnet_v2" "syseleven_subnet" {
   dns_nameservers = ["37.123.105.116", "37.123.105.117"]
   ip_version      = 4
 
-  allocation_pools {
+  allocation_pool {
     start = "192.168.2.10"
 
     end = "192.168.2.250"
