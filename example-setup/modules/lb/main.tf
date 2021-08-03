@@ -136,4 +136,4 @@ resource "openstack_compute_floatingip_associate_v2" "service_floating_ip_assocs
 
 output "instance_ip" {
   value = "${openstack_compute_instance_v2.lb_instances.*.access_ip_v4}"
-}\
+}
