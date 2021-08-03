@@ -14,12 +14,12 @@ resource "openstack_compute_instance_v2" "instance_blue" {
   }
 }
 
-resource "openstack_compute_floatingip_v2" "fip_blue" {
+resource "openstack_networkig_floatingip_v2" "fip_blue" {
   pool = var.external_network
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fipas_blue" {
-  floating_ip = openstack_compute_floatingip_v2.fip_blue.address
+  floating_ip = openstack_networking_floatingip_v2.fip_blue.address
   instance_id = openstack_compute_instance_v2.instance_blue.id
 }
 

@@ -110,14 +110,14 @@ resource "openstack_compute_secgroup_v2" "allow_ssh" {
 # Floating IP addresses and associations
 ################################################################################
 
-resource "openstack_compute_floatingip_v2" "service_floating_ips" {
+resource "openstack_networking_floatingip_v2" "service_floating_ips" {
   count = "${var.num}"
   pool  = "${var.public_network}"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "service_floating_ip_assocs" {
+resource "openstack_networking_floatingip_associate_v2" "service_floating_ip_assocs" {
   count       = "${var.num}"
-  floating_ip = "${element(openstack_compute_floatingip_v2.service_floating_ips.*.address, count.index)}"
+  floating_ip = "${element(openstack_networking_floatingip_v2.service_floating_ips.*.address, count.index)}"
   instance_id = "${element(openstack_compute_instance_v2.service_instances.*.id, count.index)}"
 }
 
