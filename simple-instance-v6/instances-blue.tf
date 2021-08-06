@@ -14,7 +14,7 @@ resource "openstack_compute_instance_v2" "instance_blue" {
   }
 }
 
-resource "openstack_networkig_floatingip_v2" "fip_blue" {
+resource "openstack_networking_floatingip_v2" "fip_blue" {
   pool = var.external_network
 }
 
