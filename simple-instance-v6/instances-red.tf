@@ -19,7 +19,7 @@ resource "openstack_networking_floatingip_v2" "fip_red" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fipas_red" {
-  floating_ip = openstack_compute_networking_v2.fip_red.address
+  floating_ip = openstack_networking_floatingip_v2.fip_red.address
   instance_id = openstack_compute_instance_v2.instance_red.id
 }
 
