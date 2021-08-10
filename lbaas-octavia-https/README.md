@@ -12,7 +12,7 @@ using plain HTTP.
 This example requires a barbican secret container with the name `tls` that 
 contains a certificate and a private key.
 
-You could generate an example certificate and a private key using the 
+You can generate an example certificate and a private key using the 
 following command:
 
 ```shell
