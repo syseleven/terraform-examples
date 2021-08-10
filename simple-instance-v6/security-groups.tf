@@ -10,7 +10,7 @@ resource "openstack_networking_secgroup_rule_v2" "sg_ipv4_tcp" {
   port_range_min    = 22
   port_range_max    = 22
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = "${openstack_networking_secgroup_v2.sg_ssh.id}"
+  security_group_id = openstack_networking_secgroup_v2.sg_ssh.id
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_ipv4_icmp" {
@@ -18,7 +18,7 @@ resource "openstack_networking_secgroup_rule_v2" "sg_ipv4_icmp" {
   ethertype         = "IPv4"
   protocol          = "icmp"
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = "${openstack_networking_secgroup_v2.sg_ssh.id}"
+  security_group_id = openstack_networking_secgroup_v2.sg_ssh.id
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_ipv6_tcp" {
@@ -28,7 +28,7 @@ resource "openstack_networking_secgroup_rule_v2" "sg_ipv6_tcp" {
   port_range_min    = 22
   port_range_max    = 22
   remote_ip_prefix  = "::/0"
-  security_group_id = "${openstack_networking_secgroup_v2.sg_ssh.id}"
+  security_group_id = openstack_networking_secgroup_v2.sg_ssh.id
 }
 
 resource "openstack_networking_secgroup_rule_v2" "sg_ipv6_icmp" {
@@ -36,5 +36,5 @@ resource "openstack_networking_secgroup_rule_v2" "sg_ipv6_icmp" {
   ethertype         = "IPv6"
   protocol          = "icmp"
   remote_ip_prefix  = "::/0"
-  security_group_id = "${openstack_networking_secgroup_v2.sg_ssh.id}"
+  security_group_id = openstack_networking_secgroup_v2.sg_ssh.id
 }

@@ -14,5 +14,5 @@ data "openstack_networking_network_v2" "ext-net" {
 }
 
 data "openstack_networking_subnetpool_v2" "v6pool" {
-  name            = "subnet-pool-v6_1"
+  name = "subnet-pool-v6_1"
 }
