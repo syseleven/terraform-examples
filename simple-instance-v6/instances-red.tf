@@ -3,7 +3,7 @@ resource "openstack_compute_instance_v2" "instance_red" {
   image_id        = data.openstack_images_image_v2.image.id
   flavor_name     = "m1.tiny"
   key_pair        = openstack_compute_keypair_v2.kp_adminuser.name
-  security_groups = [openstack_compute_secgroup_v2.sg_ssh.name]
+  security_groups = [openstack_networking_secgroup_v2.sg_ssh.name]
 
   network {
     uuid = openstack_networking_network_v2.net_red.id
@@ -14,12 +14,12 @@ resource "openstack_compute_instance_v2" "instance_red" {
   }
 }
 
-resource "openstack_compute_floatingip_v2" "fip_red" {
+resource "openstack_networking_floatingip_v2" "fip_red" {
   pool = var.external_network
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fipas_red" {
-  floating_ip = openstack_compute_floatingip_v2.fip_red.address
+  floating_ip = openstack_networking_floatingip_v2.fip_red.address
   instance_id = openstack_compute_instance_v2.instance_red.id
 }
 

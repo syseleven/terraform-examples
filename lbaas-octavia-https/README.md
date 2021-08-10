@@ -11,6 +11,14 @@ using plain HTTP.
 
 This example requires a barbican secret container with the name `tls` that 
 contains a certificate and a private key.
+
+You can generate an example certificate and a private key using the 
+following command:
+
+```shell
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+```
+
 The certificate and the private key can be stored in barbican with 
 the following commands: 
 

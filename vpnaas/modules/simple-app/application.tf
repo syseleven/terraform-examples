@@ -59,11 +59,11 @@ resource "openstack_compute_instance_v2" "application" {
   }
 }
 
-resource "openstack_compute_floatingip_v2" "application" {
+resource "openstack_networking_floatingip_v2" "application" {
   pool = data.openstack_networking_network_v2.ext_net.name
 }
 
 resource "openstack_compute_floatingip_associate_v2" "application" {
-  floating_ip = openstack_compute_floatingip_v2.application.address
+  floating_ip = openstack_networking_floatingip_v2.application.address
   instance_id = openstack_compute_instance_v2.application.id
 }

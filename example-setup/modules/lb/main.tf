@@ -8,36 +8,36 @@
 ################################################################################
 
 variable "num" {
-  type    = "string"
+  type    = string
   default = "1"
 }
 
 variable "name" {
-  type = "string"
+  type = string
 }
 
 variable "syseleven_net" {
-  type = "string"
+  type = string
 }
 
 variable "image" {
-  type = "string"
+  type = string
 }
 
 variable "flavor" {
-  type = "string"
+  type = string
 }
 
 variable "ssh_keys" {
-  type = "list"
+  type = list
 }
 
 variable "public_network" {
-  type = "string"
+  type = string
 }
 
 variable "metadata" {
-  type = "map"
+  type = map
 }
 
 ################################################################################
@@ -73,7 +73,7 @@ resource "openstack_compute_instance_v2" "lb_instances" {
 
   lifecycle {
     ignore_changes = [
-      "image_id",
+      image_id,
     ]
   }
 }
@@ -119,14 +119,14 @@ resource "openstack_compute_secgroup_v2" "allow_webtraffic" {
 # Floating IP addresses and associations
 ################################################################################
 
-resource "openstack_compute_floatingip_v2" "lb_floating_ips" {
+resource "openstack_networking_floatingip_v2" "lb_floating_ips" {
   count = "${var.num}"
   pool  = "${var.public_network}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "service_floating_ip_assocs" {
   count       = "${var.num}"
-  floating_ip = "${element(openstack_compute_floatingip_v2.lb_floating_ips.*.address, count.index)}"
+  floating_ip = "${element(openstack_networking_floatingip_v2.lb_floating_ips.*.address, count.index)}"
   instance_id = "${element(openstack_compute_instance_v2.lb_instances.*.id, count.index)}"
 }
 

@@ -109,7 +109,7 @@ resource "openstack_networking_subnet_v2" "syseleven_subnet" {
   dns_nameservers = ["37.123.105.116", "37.123.105.117"]
   ip_version      = 4
 
-  allocation_pools {
+  allocation_pool {
     start = "192.168.2.10"
 
     end = "192.168.2.250"
@@ -132,7 +132,7 @@ resource "openstack_networking_router_interface_v2" "router_subnet_connect" {
 ################################################################################
 
 module "servicehost_group" {
-  num  = var.number_servicehosts
+  num    = var.number_servicehosts
   source = "./modules/servicehost"
 
   metadata = {
@@ -167,7 +167,7 @@ module "lb_group" {
 }
 
 module "dbserver_group" {
-  num  = var.number_dbservers
+  num    = var.number_dbservers
   source = "./modules/dbserver"
 
   metadata = {
@@ -184,7 +184,7 @@ module "dbserver_group" {
 }
 
 module "appserver_group" {
-  num  = var.number_appservers
+  num    = var.number_appservers
   source = "./modules/server"
 
   metadata = {
