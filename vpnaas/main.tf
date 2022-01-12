@@ -61,6 +61,11 @@ resource "openstack_vpnaas_site_connection_v2" "cbk_to_dbl" {
   local_ep_group_id = module.network_cbk.local_endpoint_group_id
   peer_ep_group_id  = openstack_vpnaas_endpoint_group_v2.peer_dbl.id
   admin_state_up    = "true"
+  dpd {
+    action   = "hold"
+    timeout  = 120
+    interval = 30
+  }
 }
 
 resource "openstack_vpnaas_endpoint_group_v2" "peer_dbl" {
@@ -85,6 +90,11 @@ resource "openstack_vpnaas_site_connection_v2" "dbl_to_cbk" {
   local_ep_group_id = module.network_dbl.local_endpoint_group_id
   peer_ep_group_id  = openstack_vpnaas_endpoint_group_v2.peer_cbk.id
   admin_state_up    = "true"
+  dpd {
+    action   = "hold"
+    timeout  = 120
+    interval = 30
+  }
 }
 
 resource "openstack_vpnaas_endpoint_group_v2" "peer_cbk" {
