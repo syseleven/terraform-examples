@@ -31,11 +31,18 @@ resource "openstack_networking_router_interface_v2" "network" {
 }
 
 resource "openstack_vpnaas_ike_policy_v2" "network" {
-  name = var.name
+  name                 = var.name
+  ike_version          = "v2"
+  auth_algorithm       = "sha256"
+  encryption_algorithm = "aes-256"
+  pfs                  = "group14"
 }
 
 resource "openstack_vpnaas_ipsec_policy_v2" "network" {
-  name = var.name
+  name                 = var.name
+  auth_algorithm       = "sha256"
+  encryption_algorithm = "aes-256"
+  pfs                  = "group14"
 }
 
 resource "openstack_vpnaas_service_v2" "network" {
