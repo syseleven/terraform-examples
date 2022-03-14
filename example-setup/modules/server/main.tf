@@ -29,25 +29,11 @@ variable "flavor" {
 }
 
 variable "ssh_keys" {
-  type = list
+  type = list(any)
 }
 
 variable "metadata" {
-  type = map
-}
-
-################################################################################
-# Template cloudinit
-################################################################################
-
-data "template_file" "cloud_config" {
-  template = "${file("${path.module}/cloud.cfg")}"
-
-  vars = {
-    ssh_keys             = "${indent(8, "\n- ${join("\n- ", var.ssh_keys)}")}"
-    install_generic_sh   = "${base64encode(file("${path.module}/scripts/install_generic.sh"))}"
-    install_appserver_sh = "${base64encode(file("${path.module}/scripts/install_appserver.sh"))}"
-  }
+  type = map(any)
 }
 
 ################################################################################
@@ -55,15 +41,19 @@ data "template_file" "cloud_config" {
 ################################################################################
 
 resource "openstack_compute_instance_v2" "app_instances" {
-  count       = "${var.num}"
+  count       = var.num
   name        = "${var.name}${count.index}"
-  image_id    = "${var.image}"
-  flavor_name = "${var.flavor}"
-  user_data   = "${data.template_file.cloud_config.rendered}"
-  metadata    = "${var.metadata}"
+  image_id    = var.image
+  flavor_name = var.flavor
+  metadata    = var.metadata
+  user_data = templatefile("${path.module}/cloud.cfg", {
+    ssh_keys             = indent(8, "\n- ${join("\n- ", var.ssh_keys)}"),
+    install_generic_sh   = base64encode(file("${path.module}/scripts/install_generic.sh")),
+    install_appserver_sh = base64encode(file("${path.module}/scripts/install_appserver.sh"))
+  })
 
   network {
-    uuid = "${var.syseleven_net}"
+    uuid = var.syseleven_net
   }
 
   lifecycle {
@@ -78,5 +68,5 @@ resource "openstack_compute_instance_v2" "app_instances" {
 ################################################################################
 
 output "instance_ip" {
-  value = "${openstack_compute_instance_v2.app_instances.*.access_ip_v4}"
+  value = openstack_compute_instance_v2.app_instances.*.access_ip_v4
 }

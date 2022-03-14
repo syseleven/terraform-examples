@@ -70,22 +70,13 @@ resource "openstack_networking_router_interface_v2" "routerint_lbdemo" {
   subnet_id = openstack_networking_subnet_v2.subnet_lbdemo.id
 }
 
-data "template_file" "cloud_config" {
-  template = file("${path.module}/assets/cloud.cfg")
-
-  vars = {
-    init_app_sh = base64encode(file("${path.module}/assets/init-app.sh"))
-  }
-}
-
 resource "openstack_compute_instance_v2" "instance_lbdemo" {
   count       = 3
   name        = "App Instance ${count.index + 1}"
   image_id    = data.openstack_images_image_v2.image.id
   flavor_name = "m1.small"
   key_pair    = openstack_compute_keypair_v2.kp_admin.name
-  user_data   = data.template_file.cloud_config.rendered
-
+  user_data   = templatefile("${path.module}/assets/cloud.cfg", { init_app_sh = base64encode(file("${path.module}/assets/init-app.sh")) })
 
   security_groups = [
     openstack_compute_secgroup_v2.sg_web.name, "default"

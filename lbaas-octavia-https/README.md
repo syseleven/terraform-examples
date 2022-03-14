@@ -2,7 +2,7 @@
 
 ## Overview
 
-In this example we deploy a loadbalancer with SSL offloading and 3 
+In this example we deploy a load balancer with SSL offloading and 3 
 backend servers. Incoming requests are distributed round robin 
 using plain HTTP. 
 
