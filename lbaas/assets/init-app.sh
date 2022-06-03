@@ -1,7 +1,4 @@
 #!/bin/sh
 
-apt -q update
-apt -q -y install nginx
-
-echo `hostname` > /var/www/html/index.html
-
+apt-get -q update
+apt-get -q -y install curl apache2 php7.4-fpm libapache2-mod-php7.4
