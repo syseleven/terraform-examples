@@ -129,6 +129,7 @@ resource "openstack_lb_listener_v2" "lb_app_listener" {
   protocol        = "HTTP"
   protocol_port   = 80
   loadbalancer_id = openstack_lb_loadbalancer_v2.lb_app.id
+  allowed_cidrs   = ["0.0.0.0/0"]
   insert_headers = {
     X-Forwarded-For  = "true"
     X-Forwarded-Port = "true"

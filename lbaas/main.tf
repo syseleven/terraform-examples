@@ -136,6 +136,7 @@ resource "openstack_lb_listener_v2" "lb_app_listener" {
   protocol        = "TCP"
   protocol_port   = 80
   loadbalancer_id = openstack_lb_loadbalancer_v2.lb_app.id
+  allowed_cidrs   = ["0.0.0.0/0"]
 }
 
 resource "openstack_lb_pool_v2" "lb_app_pool" {
