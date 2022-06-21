@@ -75,7 +75,10 @@ resource "openstack_compute_instance_v2" "instance_lbdemo" {
   image_id    = data.openstack_images_image_v2.image.id
   flavor_name = "m1.tiny"
   key_pair    = openstack_compute_keypair_v2.kp_admin.name
-  user_data   = templatefile("${path.module}/assets/cloud.cfg", { init_app_sh = base64encode(file("${path.module}/assets/init-app.sh")) })
+  user_data = templatefile("${path.module}/assets/cloud.cfg", {
+    init_app_sh = base64encode(file("${path.module}/assets/init-app.sh"))
+    any_app_php = base64encode(file("${path.module}/assets/AnyApp/index.php"))
+  })
 
   security_groups = [
     "default",
@@ -133,6 +136,7 @@ resource "openstack_lb_listener_v2" "lb_app_listener" {
   protocol        = "TCP"
   protocol_port   = 80
   loadbalancer_id = openstack_lb_loadbalancer_v2.lb_app.id
+  allowed_cidrs   = ["0.0.0.0/0"]
 }
 
 resource "openstack_lb_pool_v2" "lb_app_pool" {
