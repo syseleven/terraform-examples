@@ -118,7 +118,7 @@ resource "openstack_networking_floatingip_v2" "fip_lbdemo_jumphost" {
   pool = "ext-net"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fipas_lbdemo" {
+resource "openstack_networking_floatingip_associate_v2" "fipas_lbdemo" {
   floating_ip = openstack_networking_floatingip_v2.fip_lbdemo_jumphost.address
   instance_id = openstack_compute_instance_v2.instance_jumphost.id
 }
