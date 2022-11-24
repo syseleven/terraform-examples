@@ -77,7 +77,7 @@ resource "openstack_compute_instance_v2" "instance_lbdemo" {
   key_pair    = openstack_compute_keypair_v2.kp_admin.name
   user_data = templatefile("${path.module}/assets/cloud.cfg", {
     init_app_sh = base64encode(file("${path.module}/assets/init-app.sh"))
-    any_app_php = base64encode(file("${path.module}/assets/AnyApp/index.php"))
+    any_app_php = base64encode(file("${path.module}/../sources/AnyApp/index.php"))
   })
 
   security_groups = [
