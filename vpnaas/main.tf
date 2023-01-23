@@ -32,7 +32,7 @@ module "network_cbk" {
 module "application_cbk" {
   source     = "./modules/simple-app"
   region     = "cbk"
-  public_key = var.public_key
+  public_key = var.ssh_publickey
 }
 
 # Deploy infrastructure to DBL
@@ -45,7 +45,7 @@ module "network_dbl" {
 module "application_dbl" {
   source     = "./modules/simple-app"
   region     = "dbl"
-  public_key = var.public_key
+  public_key = var.ssh_publickey
 }
 
 # VPN Site-to-Site connections
