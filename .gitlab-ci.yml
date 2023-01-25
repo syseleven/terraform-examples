@@ -1,7 +1,329 @@
-stages:
-  - test
+image:
+  name: hashicorp/terraform:light
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
-test:
-  stage: test
+stages:
+  - plan:simple-instance
+  - deploy:simple-instance
+  - destroy:simple-instance
+
+  - plan:simple-instance-v6
+  - deploy:simple-instance-v6
+  - destroy:simple-instance-v6
+
+  - plan:simple-objects
+  - deploy:simple-objects
+  - destroy:simple-objects
+
+  - plan:DNSaaS
+  - deploy:DNSaaS
+  - destroy:DNSaaS
+
+  - plan:lbaas
+  - deploy:lbaas
+  - destroy:lbaas
+
+  - plan:lbaas-octavia-http
+  - deploy:lbaas-octavia-http
+  - destroy:lbaas-octavia-http
+
+  # - plan:lbaas-octavia-https
+  # - deploy:lbaas-octavia-https
+  # - destroy:lbaas-octavia-https
+
+  - plan:vpnaas
+  - deploy:vpnaas
+  - destroy:vpnaas
+variables:
+  TF_VAR_ssh_publickey: $VAR_SSH_PUB_KEY
+  OS_AUTH_URL: $VAR_OS_AUTH_URL
+  OS_DOMAIN_NAME: $VAR_OS_DOMAIN_NAME
+  OS_PASSWORD: $VAR_OS_PASSWORD
+  OS_PROJECT_NAME: $VAR_OS_PROJECT_NAME
+  OS_REGION_NAME: $VAR_OS_REGION_NAME
+  OS_USERNAME: $VAR_OS_USERNAME
+
+# Templates
+
+.terraform_plan: &terraform_plan
   script:
-    - echo "Test job!"
+    - cd ${SERVICE}
+    - terraform init -input=false
+    - terraform validate
+    - terraform plan -out planfile
+  artifacts:
+    paths:
+      - ${SERVICE}/planfile
+
+.terraform_apply: &terraform_apply
+  script:
+    - cd ${SERVICE}
+    - terraform init -input=false
+    - terraform validate
+    - terraform apply -input=false planfile
+  artifacts:
+    paths:
+      - ${SERVICE}/terraform.tfstate
+
+.terraform_destroy: &terraform_destroy
+  script:
+    - cd ${SERVICE}
+    - terraform init -input=false
+    - terraform apply -destroy -input=false -auto-approve
+  artifacts:
+    paths:
+      - ${SERVICE}/terraform.tfstate
+
+#########################
+# Job for simple-instance
+#########################
+Terraform simple-instance Plan:
+  <<: *terraform_plan
+  stage: plan:simple-instance
+  variables:
+    SERVICE: "simple-instance"
+
+Terraform simple-instance Apply:
+  <<: *terraform_apply
+  stage: deploy:simple-instance
+  needs: ["Terraform simple-instance Plan"]
+  variables:
+    SERVICE: "simple-instance"
+
+Terraform simple-instance Destroy:
+  <<: *terraform_destroy
+  stage: destroy:simple-instance
+  needs: ["Terraform simple-instance Apply"]
+  variables:
+    SERVICE: "simple-instance"
+
+Terraform simple-instance Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:simple-instance
+  needs: ["Terraform simple-instance Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "simple-instance"
+
+############################
+# Job for simple-instance-v6
+############################
+Terraform simple-instance-v6 Plan:
+  <<: *terraform_plan
+  stage: plan:simple-instance-v6
+  variables:
+    OS_REGION_NAME: "fes"
+    SERVICE: "simple-instance-v6"
+
+Terraform simple-instance-v6 Apply:
+  <<: *terraform_apply
+  stage: deploy:simple-instance-v6
+  needs: ["Terraform simple-instance-v6 Plan"]
+  variables:
+    OS_REGION_NAME: "fes"
+    SERVICE: "simple-instance-v6"
+
+Terraform simple-instance-v6 Destroy:
+  <<: *terraform_destroy
+  stage: destroy:simple-instance-v6
+  needs: ["Terraform simple-instance-v6 Apply"]
+  variables:
+    OS_REGION_NAME: "fes"
+    SERVICE: "simple-instance-v6"
+
+Terraform simple-instance-v6 Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:simple-instance-v6
+  needs: ["Terraform simple-instance-v6 Apply"]
+  when: on_failure
+  variables:
+    OS_REGION_NAME: "fes"
+    SERVICE: "simple-instance-v6"
+
+########################
+# Job for simple-objects
+########################
+Terraform simple-objects Plan:
+  <<: *terraform_plan
+  stage: plan:simple-objects
+  variables:
+    SERVICE: "simple-objects"
+
+Terraform simple-objects Apply:
+  <<: *terraform_apply
+  stage: deploy:simple-objects
+  needs: ["Terraform simple-objects Plan"]
+  variables:
+    SERVICE: "simple-objects"
+
+Terraform simple-objects Destroy:
+  <<: *terraform_destroy
+  stage: destroy:simple-objects
+  needs: ["Terraform simple-objects Apply"]
+  variables:
+    SERVICE: "simple-objects"
+
+Terraform simple-objects Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:simple-objects
+  needs: ["Terraform simple-objects Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "simple-objects"
+
+################
+# Job for DNSaaS
+################
+Terraform DNSaaS Plan:
+  <<: *terraform_plan
+  stage: plan:DNSaaS
+  variables:
+    SERVICE: "DNSaaS"
+
+Terraform DNSaaS Apply:
+  <<: *terraform_apply
+  stage: deploy:DNSaaS
+  needs: ["Terraform DNSaaS Plan"]
+  variables:
+    SERVICE: "DNSaaS"
+
+Terraform DNSaaS Destroy:
+  <<: *terraform_destroy
+  stage: destroy:DNSaaS
+  needs: ["Terraform DNSaaS Apply"]
+  variables:
+    SERVICE: "DNSaaS"
+
+Terraform DNSaaS Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:DNSaaS
+  needs: ["Terraform DNSaaS Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "DNSaaS"
+
+###############
+# Job for lbaas
+###############
+Terraform lbaas Plan:
+  <<: *terraform_plan
+  stage: plan:lbaas
+  variables:
+    SERVICE: "lbaas"
+
+Terraform lbaas Apply:
+  <<: *terraform_apply
+  needs: ["Terraform lbaas Plan"]
+  stage: deploy:lbaas
+  variables:
+    SERVICE: "lbaas"
+
+Terraform lbaas Destroy:
+  <<: *terraform_destroy
+  stage: destroy:lbaas
+  needs: ["Terraform lbaas Apply"]
+  variables:
+    SERVICE: "lbaas"
+
+Terraform lbaas Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:lbaas
+  needs: ["Terraform lbaas Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "lbaas"
+
+############################
+# Job for lbaas-octavia-http
+############################
+Terraform lbaas-octavia-http Plan:
+  <<: *terraform_plan
+  stage: plan:lbaas-octavia-http
+  variables:
+    SERVICE: "lbaas-octavia-http"
+
+Terraform lbaas-octavia-http Apply:
+  <<: *terraform_apply
+  stage: deploy:lbaas-octavia-http
+  needs: ["Terraform lbaas-octavia-http Plan"]
+  variables:
+    SERVICE: "lbaas-octavia-http"
+
+Terraform lbaas-octavia-http Destroy:
+  <<: *terraform_destroy
+  stage: destroy:lbaas-octavia-http
+  needs: ["Terraform lbaas-octavia-http Apply"]
+  variables:
+    SERVICE: "lbaas-octavia-http"
+
+Terraform lbaas-octavia-http Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:lbaas-octavia-http
+  needs: ["Terraform lbaas-octavia-http Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "lbaas-octavia-http"
+
+#############################
+# Job for lbaas-octavia-https
+#############################
+# Terraform lbaas-octavia-https Plan:
+#   <<: *terraform_plan
+#   stage: plan:lbaas-octavia-https
+#   variables:
+#     SERVICE: "lbaas-octavia-https"
+
+# Terraform lbaas-octavia-https Apply:
+#   <<: *terraform_apply
+#   stage: deploy:lbaas-octavia-https
+#   needs: ["Terraform lbaas-octavia-https Plan"]
+#   variables:
+#     SERVICE: "lbaas-octavia-https"
+
+# Terraform lbaas-octavia-https Destroy:
+#   <<: *terraform_destroy
+#   stage: destroy:lbaas-octavia-https
+#   needs: ["Terraform lbaas-octavia-https Apply"]
+#   variables:
+#     SERVICE: "lbaas-octavia-https"
+
+# Terraform lbaas-octavia-https Cleanup:
+#   <<: *terraform_destroy
+#   stage: deploy:lbaas-octavia-https
+#   needs: ["Terraform lbaas-octavia-https Apply"]
+#   when: on_failure
+#   variables:
+#     SERVICE: "lbaas-octavia-https"
+
+################
+# Job for vpnaas
+################
+Terraform vpnaas Plan:
+  <<: *terraform_plan
+  stage: plan:vpnaas
+  variables:
+    SERVICE: "vpnaas"
+
+Terraform vpnaas Apply:
+  <<: *terraform_apply
+  stage: deploy:vpnaas
+  needs: ["Terraform vpnaas Plan"]
+  variables:
+    SERVICE: "vpnaas"
+
+Terraform vpnaas Destroy:
+  <<: *terraform_destroy
+  stage: destroy:vpnaas
+  needs: ["Terraform vpnaas Apply"]
+  variables:
+    SERVICE: "vpnaas"
+
+Terraform vpnaas Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:vpnaas
+  needs: ["Terraform vpnaas Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "vpnaas"
