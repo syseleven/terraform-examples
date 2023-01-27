@@ -46,7 +46,9 @@ variables:
   OS_REGION_NAME: $VAR_OS_REGION_NAME
   OS_USERNAME: $VAR_OS_USERNAME
 
+###########
 # Templates
+###########
 
 .terraform_plan: &terraform_plan
   script:
@@ -55,6 +57,7 @@ variables:
     - terraform validate
     - terraform plan -out planfile
   artifacts:
+    when: always
     paths:
       - ${SERVICE}/planfile
 
@@ -65,6 +68,7 @@ variables:
     - terraform validate
     - terraform apply -input=false planfile
   artifacts:
+    when: always
     paths:
       - ${SERVICE}/terraform.tfstate
 
@@ -74,12 +78,13 @@ variables:
     - terraform init -input=false
     - terraform apply -destroy -input=false -auto-approve
   artifacts:
+    when: always
     paths:
       - ${SERVICE}/terraform.tfstate
 
-#########################
-# Job for simple-instance
-#########################
+##############################
+# Pipeline for simple-instance
+##############################
 Terraform simple-instance Plan:
   <<: *terraform_plan
   stage: plan:simple-instance
@@ -108,9 +113,9 @@ Terraform simple-instance Cleanup:
   variables:
     SERVICE: "simple-instance"
 
-############################
-# Job for simple-instance-v6
-############################
+#################################
+# Pipeline for simple-instance-v6
+#################################
 Terraform simple-instance-v6 Plan:
   <<: *terraform_plan
   stage: plan:simple-instance-v6
@@ -143,9 +148,9 @@ Terraform simple-instance-v6 Cleanup:
     OS_REGION_NAME: "fes"
     SERVICE: "simple-instance-v6"
 
-########################
-# Job for simple-objects
-########################
+#############################
+# Pipeline for simple-objects
+#############################
 Terraform simple-objects Plan:
   <<: *terraform_plan
   stage: plan:simple-objects
@@ -174,9 +179,9 @@ Terraform simple-objects Cleanup:
   variables:
     SERVICE: "simple-objects"
 
-################
-# Job for DNSaaS
-################
+#####################
+# Pipeline for DNSaaS
+#####################
 Terraform DNSaaS Plan:
   <<: *terraform_plan
   stage: plan:DNSaaS
@@ -205,9 +210,9 @@ Terraform DNSaaS Cleanup:
   variables:
     SERVICE: "DNSaaS"
 
-###############
-# Job for lbaas
-###############
+####################
+# Pipeline for lbaas
+####################
 Terraform lbaas Plan:
   <<: *terraform_plan
   stage: plan:lbaas
@@ -236,9 +241,9 @@ Terraform lbaas Cleanup:
   variables:
     SERVICE: "lbaas"
 
-############################
-# Job for lbaas-octavia-http
-############################
+#################################
+# Pipeline for lbaas-octavia-http
+#################################
 Terraform lbaas-octavia-http Plan:
   <<: *terraform_plan
   stage: plan:lbaas-octavia-http
@@ -267,9 +272,9 @@ Terraform lbaas-octavia-http Cleanup:
   variables:
     SERVICE: "lbaas-octavia-http"
 
-#############################
-# Job for lbaas-octavia-https
-#############################
+##################################
+# Pipeline for lbaas-octavia-https
+##################################
 # Terraform lbaas-octavia-https Plan:
 #   <<: *terraform_plan
 #   stage: plan:lbaas-octavia-https
@@ -298,9 +303,9 @@ Terraform lbaas-octavia-http Cleanup:
 #   variables:
 #     SERVICE: "lbaas-octavia-https"
 
-################
-# Job for vpnaas
-################
+#####################
+# Pipeline for vpnaas
+#####################
 Terraform vpnaas Plan:
   <<: *terraform_plan
   stage: plan:vpnaas
