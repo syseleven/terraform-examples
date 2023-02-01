@@ -29,9 +29,9 @@ stages:
   - deploy:lbaas-octavia-http
   - destroy:lbaas-octavia-http
 
-  # - plan:lbaas-octavia-https
-  # - deploy:lbaas-octavia-https
-  # - destroy:lbaas-octavia-https
+  - plan:lbaas-octavia-https
+  - deploy:lbaas-octavia-https
+  - destroy:lbaas-octavia-https
 
   - plan:vpnaas
   - deploy:vpnaas
@@ -275,33 +275,33 @@ Terraform lbaas-octavia-http Cleanup:
 ##################################
 # Pipeline for lbaas-octavia-https
 ##################################
-# Terraform lbaas-octavia-https Plan:
-#   <<: *terraform_plan
-#   stage: plan:lbaas-octavia-https
-#   variables:
-#     SERVICE: "lbaas-octavia-https"
+Terraform lbaas-octavia-https Plan:
+  <<: *terraform_plan
+  stage: plan:lbaas-octavia-https
+  variables:
+    SERVICE: "lbaas-octavia-https"
 
-# Terraform lbaas-octavia-https Apply:
-#   <<: *terraform_apply
-#   stage: deploy:lbaas-octavia-https
-#   needs: ["Terraform lbaas-octavia-https Plan"]
-#   variables:
-#     SERVICE: "lbaas-octavia-https"
+Terraform lbaas-octavia-https Apply:
+  <<: *terraform_apply
+  stage: deploy:lbaas-octavia-https
+  needs: ["Terraform lbaas-octavia-https Plan"]
+  variables:
+    SERVICE: "lbaas-octavia-https"
 
-# Terraform lbaas-octavia-https Destroy:
-#   <<: *terraform_destroy
-#   stage: destroy:lbaas-octavia-https
-#   needs: ["Terraform lbaas-octavia-https Apply"]
-#   variables:
-#     SERVICE: "lbaas-octavia-https"
+Terraform lbaas-octavia-https Destroy:
+  <<: *terraform_destroy
+  stage: destroy:lbaas-octavia-https
+  needs: ["Terraform lbaas-octavia-https Apply"]
+  variables:
+    SERVICE: "lbaas-octavia-https"
 
-# Terraform lbaas-octavia-https Cleanup:
-#   <<: *terraform_destroy
-#   stage: deploy:lbaas-octavia-https
-#   needs: ["Terraform lbaas-octavia-https Apply"]
-#   when: on_failure
-#   variables:
-#     SERVICE: "lbaas-octavia-https"
+Terraform lbaas-octavia-https Cleanup:
+  <<: *terraform_destroy
+  stage: deploy:lbaas-octavia-https
+  needs: ["Terraform lbaas-octavia-https Apply"]
+  when: on_failure
+  variables:
+    SERVICE: "lbaas-octavia-https"
 
 #####################
 # Pipeline for vpnaas
