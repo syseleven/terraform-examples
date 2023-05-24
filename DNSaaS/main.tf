@@ -1,6 +1,10 @@
+resource "random_pet" "unique_domain" {
+  prefix = "tfex"
+}
+
 resource "openstack_dns_zone_v2" "example_zone" {
-  name        = "example.com."
-  email       = "email@example.com"
+  name        = "${random_pet.unique_domain.id}.com."
+  email       = "email@${random_pet.unique_domain.id}.com"
   description = "An example dns zone"
   ttl         = 6000
   type        = "PRIMARY"
