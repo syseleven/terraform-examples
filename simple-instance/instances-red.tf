@@ -30,3 +30,4 @@ resource "openstack_networking_floatingip_associate_v2" "fipas_red" {
   floating_ip = openstack_networking_floatingip_v2.fip_red.address
   port_id     = openstack_networking_port_v2.port_red.id
 }
+
