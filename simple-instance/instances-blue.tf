@@ -6,7 +6,7 @@ resource "openstack_compute_instance_v2" "instance_blue" {
   security_groups = [openstack_networking_secgroup_v2.sg_ssh.name]
 
   network {
-    uuid = openstack_networking_network_v2.net_blue.id
+    port = openstack_networking_port_v2.port_blue.id
   }
 
   lifecycle {
@@ -18,8 +18,16 @@ resource "openstack_networking_floatingip_v2" "fip_blue" {
   pool = var.external_network
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fipas_blue" {
+resource "openstack_networking_port_v2" "port_blue" {
+  name           = "BLUE Port"
+  network_id     = openstack_networking_network_v2.net_blue.id
+  fixed_ip {
+    subnet_id    = openstack_networking_subnet_v2.subnet_blue.id
+  }
+}
+
+resource "openstack_networking_floatingip_associate_v2" "fipas_blue" {
   floating_ip = openstack_networking_floatingip_v2.fip_blue.address
-  instance_id = openstack_compute_instance_v2.instance_blue.id
+  port_id     = openstack_networking_port_v2.port_blue.id
 }
 
