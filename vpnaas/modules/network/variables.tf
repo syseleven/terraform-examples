@@ -10,3 +10,7 @@ variable "name" {
 variable "cidr" {
   type = string
 }
+
+variable "remote_cidr" {
+  type = string
+}
