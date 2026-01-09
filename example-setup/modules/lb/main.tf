@@ -49,7 +49,7 @@ resource "openstack_compute_instance_v2" "lb_instances" {
   name            = "${var.name}${count.index}"
   image_id        = var.image
   flavor_name     = var.flavor
-  security_groups = ["default", "${openstack_compute_secgroup_v2.allow_webtraffic.name}"]
+  security_groups = ["default", "${openstack_networking_secgroup_v2.allow_webtraffic.name}"]
   metadata        = var.metadata
   user_data = templatefile("${path.module}/cloud.cfg", {
     ssh_keys           = indent(8, "\n- ${join("\n- ", var.ssh_keys)}"),
@@ -72,37 +72,47 @@ resource "openstack_compute_instance_v2" "lb_instances" {
 # Custom security group
 ################################################################################
 
-resource "openstack_compute_secgroup_v2" "allow_webtraffic" {
+resource "openstack_networking_secgroup_v2" "allow_webtraffic" {
   name        = "allow incoming web traffic"
   description = "allow incoming web traffic from anywhere"
+}
 
-  rule {
-    from_port   = 80
-    to_port     = 80
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "http" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 80
+  port_range_max    = 80
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.allow_webtraffic.id
+}
 
-  rule {
-    from_port   = 443
-    to_port     = 443
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "https" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 443
+  port_range_max    = 443
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.allow_webtraffic.id
+}
 
-  rule {
-    from_port   = 8080
-    to_port     = 8080
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "http8080" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 8080
+  port_range_max    = 8080
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.allow_webtraffic.id
+}
 
-  rule {
-    from_port   = -1
-    to_port     = -1
-    ip_protocol = "icmp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "icmp" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "icmp"
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.allow_webtraffic.id
 }
 
 ################################################################################
@@ -114,10 +124,16 @@ resource "openstack_networking_floatingip_v2" "lb_floating_ips" {
   pool  = var.public_network
 }
 
-resource "openstack_compute_floatingip_associate_v2" "service_floating_ip_assocs" {
+data "openstack_networking_port_v2" "port_lb_instances" {
+  count      = var.num
+  device_id  = openstack_compute_instance_v2.lb_instances[count.index].id
+  network_id = openstack_compute_instance_v2.lb_instances[count.index].network[0].uuid
+}
+
+resource "openstack_networking_floatingip_associate_v2" "service_floating_ip_assocs" {
   count       = var.num
-  floating_ip = element(openstack_networking_floatingip_v2.lb_floating_ips.*.address, count.index)
-  instance_id = element(openstack_compute_instance_v2.lb_instances.*.id, count.index)
+  floating_ip = openstack_networking_floatingip_v2.lb_floating_ips[count.index].address
+  port_id     = data.openstack_networking_port_v2.port_lb_instances[count.index].id
 }
 
 ################################################################################

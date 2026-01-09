@@ -1,7 +1,3 @@
-provider "openstack" {
-  use_octavia = true
-}
-
 data "openstack_images_image_v2" "image" {
   most_recent = true
 
@@ -21,28 +17,34 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = var.ssh_publickey
 }
 
-resource "openstack_compute_secgroup_v2" "sg_ssh" {
+resource "openstack_networking_secgroup_v2" "sg_ssh" {
   name        = "sg_ssh"
   description = "Allow inbound SSH"
-
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
 }
 
-resource "openstack_compute_secgroup_v2" "sg_web" {
+resource "openstack_networking_secgroup_rule_v2" "ssh" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 22
+  port_range_max    = 22
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.sg_ssh.id
+}
+
+resource "openstack_networking_secgroup_v2" "sg_web" {
   name        = "sg_web"
   description = "Allow inbound HTTP"
+}
 
-  rule {
-    from_port   = 80
-    to_port     = 80
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "http" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 80
+  port_range_max    = 80
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.sg_web.id
 }
 
 resource "openstack_networking_network_v2" "net_lbdemo" {
@@ -79,7 +81,7 @@ resource "openstack_compute_instance_v2" "instance_lbdemo" {
 
   security_groups = [
     "default",
-    openstack_compute_secgroup_v2.sg_web.name,
+    openstack_networking_secgroup_v2.sg_web.name,
   ]
 
   network {
@@ -99,7 +101,7 @@ resource "openstack_compute_instance_v2" "instance_jumphost" {
 
   security_groups = [
     "default",
-    openstack_compute_secgroup_v2.sg_ssh.name,
+    openstack_networking_secgroup_v2.sg_ssh.name,
   ]
 
   network {
@@ -115,9 +117,14 @@ resource "openstack_networking_floatingip_v2" "fip_lbdemo_jumphost" {
   pool = "ext-net"
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fipas_lbdemo" {
+data "openstack_networking_port_v2" "port_jumphost" {
+  device_id  = openstack_compute_instance_v2.instance_jumphost.id
+  network_id = openstack_compute_instance_v2.instance_jumphost.network[0].uuid
+}
+
+resource "openstack_networking_floatingip_associate_v2" "fipas_lbdemo" {
   floating_ip = openstack_networking_floatingip_v2.fip_lbdemo_jumphost.address
-  instance_id = openstack_compute_instance_v2.instance_jumphost.id
+  port_id     = data.openstack_networking_port_v2.port_jumphost.id
 }
 
 resource "openstack_lb_loadbalancer_v2" "lb_app" {

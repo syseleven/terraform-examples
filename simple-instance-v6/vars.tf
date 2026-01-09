@@ -9,6 +9,12 @@ variable "ssh_publickey" {
   description = "ssh-rsa public key in authorized_keys format (ssh-rsa AAAAB3Nz [...] ABAAACAC62Lw== user@host)"
 }
 
+variable "flavor" {
+  type        = string
+  description = "Flavor for instances"
+  default     = "m2.tiny"
+}
+
 data "openstack_networking_network_v2" "ext-net" {
   name = var.external_network
 }
