@@ -59,7 +59,7 @@ resource "openstack_compute_instance_v2" "service_instances" {
 
   security_groups = [
     "default",
-    "${openstack_compute_secgroup_v2.allow_ssh.name}",
+    "${openstack_networking_secgroup_v2.allow_ssh.name}",
   ]
 
   network {
@@ -77,23 +77,27 @@ resource "openstack_compute_instance_v2" "service_instances" {
 # Custom security group
 ################################################################################
 
-resource "openstack_compute_secgroup_v2" "allow_ssh" {
-  name        = "allow incoming traffic, tcp"
-  description = "allow incoming traffic from anywhere."
+resource "openstack_networking_secgroup_v2" "allow_ssh" {
+  name        = "allow_ssh_and_icmp"
+  description = "Allow inbound SSH/ICMP for IPv4"
+}
 
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "ssh" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  port_range_min    = 22
+  port_range_max    = 22
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.allow_ssh.id
+}
 
-  rule {
-    from_port   = -1
-    to_port     = -1
-    ip_protocol = "icmp"
-    cidr        = "0.0.0.0/0"
-  }
+resource "openstack_networking_secgroup_rule_v2" "icmp" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "icmp"
+  remote_ip_prefix  = "0.0.0.0/0"
+  security_group_id = openstack_networking_secgroup_v2.allow_ssh.id
 }
 
 ################################################################################
@@ -105,10 +109,16 @@ resource "openstack_networking_floatingip_v2" "service_floating_ips" {
   pool  = var.public_network
 }
 
-resource "openstack_compute_floatingip_associate_v2" "service_floating_ip_assocs" {
+data "openstack_networking_port_v2" "port_service_instances" {
+  count      = var.num
+  device_id  = openstack_compute_instance_v2.service_instances[count.index].id
+  network_id = openstack_compute_instance_v2.service_instances[count.index].network[0].uuid
+}
+
+resource "openstack_networking_floatingip_associate_v2" "service_floating_ip_assocs" {
   count       = var.num
-  floating_ip = element(openstack_networking_floatingip_v2.service_floating_ips.*.address, count.index)
-  instance_id = element(openstack_compute_instance_v2.service_instances.*.id, count.index)
+  floating_ip = openstack_networking_floatingip_v2.service_floating_ips[count.index].address
+  port_id     = data.openstack_networking_port_v2.port_service_instances[count.index].id
 }
 
 ################################################################################
