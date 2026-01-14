@@ -8,15 +8,12 @@ until ping -c 1 syseleven.de; do sleep 1; done
 echo "# Install dependencies"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y language-pack-en-base libapache2-mod-php7.0 php7.0 php7.0-mysql mysql-client php7.0-gd php7.0-curl apache2 php-memcached php-memcache php7.0-xml php7.0-mbstring php-apcu php7.0-zip
-
-# in ubuntu some php modules behave strange
-phpenmod php7.0-mysql
+apt-get install -y language-pack-en-base libapache2-mod-php php php-mysql mysql-client php-gd php-curl apache2 php-memcached php-memcache php-xml php-mbstring php-apcu php-zip
 
 # configure apache vhost
 cat <<EOF> /etc/apache2/sites-enabled/000-default.conf
 <VirtualHost *:80>
-	ServerName shopware.syseleven.de
+	ServerName example.syseleven.de
 	ServerAdmin admin@syseleven.de
 	DocumentRoot /var/www/html
 	ErrorLog /var/log/apache2/error.log

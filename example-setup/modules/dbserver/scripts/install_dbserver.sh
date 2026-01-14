@@ -8,8 +8,15 @@ until ping -c 1 syseleven.de; do sleep 1; done
 echo "# Install dependencies"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-## apt-get install -y mysql-server
-apt-get install -y percona-xtradb-cluster-57 
+## Install Percona for mysql
+apt-get install -y curl
+curl -O https://repo.percona.com/apt/percona-release_latest.generic_all.deb
+apt-get install -y gnupg2 lsb-release ./percona-release_latest.generic_all.deb
+apt-get update
+percona-release setup pdpxc-84-lts
+apt-get install -y percona-xtradb-cluster percona-haproxy
+
+systemctl start mysql
 
 # implement consul health check
 cat <<EOF> /etc/consul.d/dbserver_health.json
@@ -26,7 +33,7 @@ cat <<EOF> /etc/consul.d/dbserver_health.json
 }
 EOF
 
-systemctl restart consul 
+systemctl restart consul
 
 logger "# Finished dbserver installation"
 echo "# Finished dbserver installation"
