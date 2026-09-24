@@ -3,7 +3,9 @@
 ## Overview
 
 In this example we deploy a virtual machine, a router and a firewall group
-that protects the network including the VM.
+that protects the network including the VM with Floating IP.
+
+It is recommended to either use Security Groups or FWaaS. In this example the Security Groups and "Port Security" is disabled to not interfere with the FWaaS rules.
 
 ## Firewall group
 
